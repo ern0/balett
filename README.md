@@ -1,2 +1,3 @@
 # balett
-Mehetsz vissza a balettbe ugrÃ¡lni
+
+Mehetünk vissza a balettba ugrálni

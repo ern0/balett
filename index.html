@@ -13,12 +13,16 @@
     --surface: #fffdf8;
     --border: #d9d0be;
     --text: #1a1612;
+    --link-color: #1f1687;
     --muted: #7a7060;
     --accent: #7a2222;
     --desc-bg: #d8f0d8;
     --desc-border: #90c890;
     --post-bg: #b0d8b0;
-    --post-border: #6aaa6a;
+    --post-border: #6eb56e;
+    --balett-fg: #f4e8d0;
+    --balett-bg: #7a2222;
+    --balett-border: #6eb56e;
     --badge-bg: linear-gradient(120deg, #2a2e38 0%, #1a2050 100%);
     --badge-text: #f4e8d0;
     --shadow: 0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
@@ -32,7 +36,7 @@
   }
 
   header {
-    background: var(--badge-bg);
+    background: linear-gradient(120deg, rgba(42,46,56,0.78) 0%, rgba(26,32,80,0.78) 100%), url('balett.jpg') center/cover no-repeat;
     padding: 2rem 2rem 1.5rem;
     position: sticky;
     top: 0;
@@ -230,8 +234,52 @@
     text-align: left;
   }
 
+  a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  a:hover {
+    color: var(--link-color);
+    text-decoration: underline;
+  }
+
+  a:active {
+    color: var(--link-color);
+    text-decoration: underline;
+  }
+
+  a:visited {
+    color: var(--link-color);
+    text-decoration: underline;
+  }
+
+  li {
+    display: block;
+    padding: 0.2em 0 0.2em 0.5em;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    position: relative;
+  }
+
+  li::before {
+    content: "•";
+    margin: 0 0.5em 0 0;
+  }
+
+  .section-box > li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    opacity: 0.45;
+  }
+
+  .section-box > li:last-child {
+    border-bottom: none;
+  }
+
   .section-box + .section-box { border-top: none; }
-  .desc-box + .post-box { border-top: 2px solid var(--post-border); }
+  .desc-box + .post-box + .balett-box { border-top: 2px solid var(--post-border); }
   .section-box:last-child { flex: 1; }
 
   .desc-box {
@@ -242,6 +290,13 @@
   .post-box {
     background: var(--post-bg);
     border-top: 2px solid var(--post-border);
+    border-radius: 0 0 14px 14px;
+  }
+
+  .balett-box {
+    color: var(--balett-fg);
+    background: var(--balett-bg);
+    border-top: 2px solid var(--balett-border);
     border-radius: 0 0 14px 14px;
   }
 
@@ -306,11 +361,11 @@
   }
 
   // Render all cards
-  persons.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
+  //persons.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
   persons.forEach(p => grid.appendChild(makeCard(p)));
   msg.classList.add('hidden');
   grid.classList.remove('hidden');
-  const postCount = persons.filter(p => p.post).length;
+  const postCount = persons.filter(p => p.balett).length;
   postCountEl.textContent = `balett: ${postCount} / ${persons.length}`;
   updateCount(persons.length, persons.length);
 
@@ -354,8 +409,8 @@
     card.className = 'card';
     card.dataset.name = p.name || p.id;
 
-    // Corner ribbon for cards with post
-    if (p.post) {
+    // Corner ribbon for cards with balett
+    if (p.balett) {
       const ribbon = document.createElement('div');
       ribbon.className = 'card-ribbon';
       ribbon.textContent = 'balett';
@@ -370,7 +425,7 @@
     avatarWrap.className = 'card-avatar-wrap';
 
     const img = new Image();
-    img.src = `img/${p.id}.jpg`;
+    img.src = `img/${p.id.split('-').pop()}.jpg`;
     img.alt = p.name || p.id;
     img.onerror = () => {
       avatarWrap.innerHTML = '';
@@ -421,7 +476,15 @@
       card.appendChild(box);
     }
 
-    if (!p.desc && !p.post) {
+    // Balett
+    if (p.balett) {
+      const box = document.createElement('div');
+      box.className = 'section-box balett-box';
+      box.innerHTML = p.balett;
+      card.appendChild(box);
+    }
+
+    if (!p.desc && !p.post && !p.balett) {
       const sp = document.createElement('div');
       sp.style.height = '1.2rem';
       card.appendChild(sp);
