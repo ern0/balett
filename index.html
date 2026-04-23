@@ -361,7 +361,7 @@
   }
 
   // Render all cards
-  //persons.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
+  persons.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
   persons.forEach(p => grid.appendChild(makeCard(p)));
   msg.classList.add('hidden');
   grid.classList.remove('hidden');
